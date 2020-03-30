@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.time;
+package com.lazycece.netty.practice.nio.tcpstickypack;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;

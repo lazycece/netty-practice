@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.fixedlength;
+package com.lazycece.netty.practice.nio.tcpunpack.line;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -6,11 +6,12 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 /**
  * @author lazycece
  */
-public class EchoServerHandler extends ChannelInboundHandlerAdapter {
+public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     private static int counter = 0;
 
@@ -23,7 +24,9 @@ public class EchoServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String body = (String) msg;
         System.out.println("receive msg: " + body + ", counter = " + ++counter);
-        ByteBuf resp = Unpooled.copiedBuffer(body.getBytes(StandardCharsets.UTF_8));
+        String respBody = "NOW_TIME".equalsIgnoreCase(body) ? new Date().toString() : "BAD_REQ";
+        respBody = respBody + System.getProperty("line.separator");
+        ByteBuf resp = Unpooled.copiedBuffer(respBody.getBytes(StandardCharsets.UTF_8));
         ctx.writeAndFlush(resp);
     }
 

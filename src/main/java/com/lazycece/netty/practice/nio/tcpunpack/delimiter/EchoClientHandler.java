@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.fixedlength;
+package com.lazycece.netty.practice.nio.tcpunpack.delimiter;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -17,11 +17,14 @@ public class EchoClientHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel active: client");
-        String reqMsg = "Hello netty! echo";
+        String reqMsg = "Hello netty!$_";
         byte[] req = reqMsg.getBytes(StandardCharsets.UTF_8);
-        ByteBuf buf = Unpooled.buffer(req.length);
-        buf.writeBytes(req);
-        ctx.writeAndFlush(buf);
+        for (int i = 0; i < 50; ++i) {
+            ByteBuf buf = Unpooled.buffer(req.length);
+            buf.writeBytes(req);
+            ctx.writeAndFlush(buf);
+//            Thread.sleep(200);
+        }
     }
 
     @Override

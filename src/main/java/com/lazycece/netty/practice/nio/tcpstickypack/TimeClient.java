@@ -1,16 +1,14 @@
-package com.lazycece.netty.practice.tcpunpack.fixedlength;
+package com.lazycece.netty.practice.nio.tcpstickypack;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.FixedLengthFrameDecoder;
-import io.netty.handler.codec.string.StringDecoder;
 
 /**
  * @author lazycece
  */
-public class EchoClient {
+public class TimeClient {
 
     public void connect(String host, int port) throws InterruptedException {
         EventLoopGroup group = new NioEventLoopGroup();
@@ -19,7 +17,7 @@ public class EchoClient {
             bootstrap.group(group)
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .handler(new EchoClient.ChildChannelHandler());
+                    .handler(new TimeClient.ChildChannelHandler());
             ChannelFuture future = bootstrap.connect(host, port).sync();
             future.channel().closeFuture().sync();
         } finally {
@@ -30,13 +28,11 @@ public class EchoClient {
     private class ChildChannelHandler extends ChannelInitializer {
         @Override
         protected void initChannel(Channel ch) throws Exception {
-            ch.pipeline().addLast(new FixedLengthFrameDecoder(10));
-            ch.pipeline().addLast(new StringDecoder());
-            ch.pipeline().addLast(new EchoClientHandler());
+            ch.pipeline().addLast(new TimeClientHandler());
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
-        new EchoClient().connect("127.0.0.1", 8080);
+        new TimeClient().connect("127.0.0.1", 8080);
     }
 }

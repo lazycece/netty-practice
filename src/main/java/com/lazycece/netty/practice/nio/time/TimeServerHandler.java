@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.time;
+package com.lazycece.netty.practice.nio.time;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

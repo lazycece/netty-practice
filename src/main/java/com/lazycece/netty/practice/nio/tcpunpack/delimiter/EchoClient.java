@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.delimiter;
+package com.lazycece.netty.practice.nio.tcpunpack.delimiter;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;

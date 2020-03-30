@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.delimiter;
+package com.lazycece.netty.practice.nio.tcpunpack.delimiter;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -10,32 +10,26 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author lazycece
  */
-public class EchoClientHandler extends ChannelInboundHandlerAdapter {
+public class EchoServerHandler extends ChannelInboundHandlerAdapter {
 
     private static int counter = 0;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel active: client");
-        String reqMsg = "Hello netty!$_";
-        byte[] req = reqMsg.getBytes(StandardCharsets.UTF_8);
-        for (int i = 0; i < 50; ++i) {
-            ByteBuf buf = Unpooled.buffer(req.length);
-            buf.writeBytes(req);
-            ctx.writeAndFlush(buf);
-//            Thread.sleep(200);
-        }
+        System.out.println("channel active: server");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         String body = (String) msg;
         System.out.println("receive msg: " + body + ", counter = " + ++counter);
+        body = body + "$_";
+        ByteBuf resp = Unpooled.copiedBuffer(body.getBytes(StandardCharsets.UTF_8));
+        ctx.writeAndFlush(resp);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        System.out.println("client exception: " + cause.getMessage());
-        ctx.close();
+        super.exceptionCaught(ctx, cause);
     }
 }

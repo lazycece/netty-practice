@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.fixedlength;
+package com.lazycece.netty.practice.nio.tcpunpack.fixedlength;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;

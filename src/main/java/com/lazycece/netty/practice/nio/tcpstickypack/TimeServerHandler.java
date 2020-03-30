@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.line;
+package com.lazycece.netty.practice.nio.tcpstickypack;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -13,8 +13,6 @@ import java.util.Date;
  */
 public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
-    private static int counter = 0;
-
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("channel active: server");
@@ -22,10 +20,13 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String body = (String) msg;
-        System.out.println("receive msg: " + body + ", counter = " + ++counter);
+        ByteBuf buf = (ByteBuf) msg;
+        byte[] req = new byte[buf.readableBytes()];
+        buf.readBytes(req);
+        String body = new String(req, StandardCharsets.UTF_8);
+        System.out.println("receive msg len: " + body.length());
+        System.out.println("receive msg: " + body);
         String respBody = "NOW_TIME".equalsIgnoreCase(body) ? new Date().toString() : "BAD_REQ";
-        respBody = respBody + System.getProperty("line.separator");
         ByteBuf resp = Unpooled.copiedBuffer(respBody.getBytes(StandardCharsets.UTF_8));
         ctx.writeAndFlush(resp);
     }

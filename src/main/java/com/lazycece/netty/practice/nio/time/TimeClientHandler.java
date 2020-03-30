@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpstickypack;
+package com.lazycece.netty.practice.nio.time;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -6,16 +6,19 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 
 /**
  * @author lazycece
  */
-public class TimeServerHandler extends ChannelInboundHandlerAdapter {
+public class TimeClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("channel active: server");
+        System.out.println("channel active: client");
+        byte[] req = "NOW_TIME".getBytes(StandardCharsets.UTF_8);
+        ByteBuf buf = Unpooled.buffer(req.length);
+        buf.writeBytes(req);
+        ctx.writeAndFlush(buf);
     }
 
     @Override
@@ -24,15 +27,12 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
         byte[] req = new byte[buf.readableBytes()];
         buf.readBytes(req);
         String body = new String(req, StandardCharsets.UTF_8);
-        System.out.println("receive msg len: " + body.length());
         System.out.println("receive msg: " + body);
-        String respBody = "NOW_TIME".equalsIgnoreCase(body) ? new Date().toString() : "BAD_REQ";
-        ByteBuf resp = Unpooled.copiedBuffer(respBody.getBytes(StandardCharsets.UTF_8));
-        ctx.writeAndFlush(resp);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        super.exceptionCaught(ctx, cause);
+        System.out.println("client exception: " + cause.getMessage());
+        ctx.close();
     }
 }

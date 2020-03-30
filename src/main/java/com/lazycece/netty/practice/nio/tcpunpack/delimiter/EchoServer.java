@@ -1,16 +1,20 @@
-package com.lazycece.netty.practice.tcpunpack.line;
+package com.lazycece.netty.practice.nio.tcpunpack.delimiter;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author lazycece
  */
-public class TimeServer {
+public class EchoServer {
 
     public void bind(int port) throws InterruptedException {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -32,13 +36,14 @@ public class TimeServer {
     private class ChildChannelHandler extends ChannelInitializer {
         @Override
         protected void initChannel(Channel ch) throws Exception {
-            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            ByteBuf buf = Unpooled.copiedBuffer("$_".getBytes(StandardCharsets.UTF_8));
+            ch.pipeline().addLast(new DelimiterBasedFrameDecoder(1024, buf));
             ch.pipeline().addLast(new StringDecoder());
-            ch.pipeline().addLast(new TimeServerHandler());
+            ch.pipeline().addLast(new EchoServerHandler());
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
-        new TimeServer().bind(8080);
+        new EchoServer().bind(8080);
     }
 }

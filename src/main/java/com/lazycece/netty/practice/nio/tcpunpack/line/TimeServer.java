@@ -1,9 +1,11 @@
-package com.lazycece.netty.practice.tcpstickypack;
+package com.lazycece.netty.practice.nio.tcpunpack.line;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 
 /**
  * @author lazycece
@@ -30,6 +32,8 @@ public class TimeServer {
     private class ChildChannelHandler extends ChannelInitializer {
         @Override
         protected void initChannel(Channel ch) throws Exception {
+            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            ch.pipeline().addLast(new StringDecoder());
             ch.pipeline().addLast(new TimeServerHandler());
         }
     }

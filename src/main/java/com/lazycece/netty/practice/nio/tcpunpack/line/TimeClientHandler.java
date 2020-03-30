@@ -1,4 +1,4 @@
-package com.lazycece.netty.practice.tcpunpack.line;
+package com.lazycece.netty.practice.nio.tcpunpack.line;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
